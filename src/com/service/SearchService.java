@@ -9,7 +9,7 @@ public class SearchService {
 	}
 
 	public void displayAvailableRooms() {
-		System.out.println("Available rooms:");
+		System.out.println("----Available rooms:----");
 		for(String type : inventory.getRoomCounts().keySet()) {
 			int available = inventory.getAvailability(type);
 			if(available > 0) {

@@ -39,6 +39,12 @@ public class RoomInventory {
 	public HashMap<String, Integer> getRoomCounts() {
 		return roomCounts;
 	}
+	 public void decrementRoom(String type) {
+	        if (roomCounts.containsKey(type) && roomCounts.get(type) > 0) {
+	            roomCounts.put(type, roomCounts.get(type) - 1);
+	        }
+	    }
+
 
 	// Display inventory
 	public void displayInventory() {

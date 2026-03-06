@@ -1,5 +1,6 @@
 package com.main;
 
+import com.reservation.BookingQueueService;
 import com.room.RoomInventory;
 import com.service.InventoryService;
 import com.service.SearchService;
@@ -10,6 +11,7 @@ public class BookMyStay {
 		RoomInventory inventory = new RoomInventory();
         InventoryService service = new InventoryService(inventory);
         SearchService guestService = new SearchService(inventory);
+        BookingQueueService bookingService = new BookingQueueService(inventory);
 		// by default initialize 
         service.initializeDefaultRooms();
         inventory.displayInventory();
@@ -23,12 +25,17 @@ public class BookMyStay {
         // Guest checks amenities
         guestService.showAmenities("Suite");
 
-        String requestedRoom = "Suite";
-        if (guestService.isRoomAvailable(requestedRoom)) {
-            System.out.println(requestedRoom + " room is available for booking.");
-        } else {
-            System.out.println(requestedRoom + " room is NOT available.");
-        }
+        bookingService.requestBooking("Alice", "Single");
+        bookingService.requestBooking("Bob", "Suite");
+        bookingService.requestBooking("Charlie", "Suite");
+        bookingService.requestBooking("Diana", "Double");
+
+        // Process bookings in FIFO order
+        bookingService.processBookings();
+
+        // Show updated inventory after bookings
+        inventory.displayInventory();
+
 
 	}
 
