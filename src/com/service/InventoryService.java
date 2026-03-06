@@ -13,7 +13,7 @@ public class InventoryService {
 	public void initializeDefaultRooms() {
 		inventory.addRoomType("Single", 10, 2000.0);
 		inventory.addRoomType("Double", 5, 3500.0);
-		inventory.addRoomType("Suite", 2, 8000.0);
+		inventory.addRoomType("Suite", 0, 8000.0);
 	}
 	// invokes update details 
 	public void updateRoom(String type, int count, double price) {

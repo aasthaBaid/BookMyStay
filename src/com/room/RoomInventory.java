@@ -36,14 +36,19 @@ public class RoomInventory {
 		return roomPrices.getOrDefault(type, 0.0);
 	}
 
+	public HashMap<String, Integer> getRoomCounts() {
+		return roomCounts;
+	}
+
 	// Display inventory
 	public void displayInventory() {
-		System.out.println(" Current Room Inventory :");
+		System.out.println("=== Current Room Inventory ===");
 		for (String type : roomCounts.keySet()) {
 			System.out.println(type + " → Count: " + roomCounts.get(type) +
 					", Price: ₹" + roomPrices.get(type));
 		}
 	}
+
 }
 
 
