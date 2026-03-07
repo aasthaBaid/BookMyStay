@@ -14,26 +14,29 @@ public class BookingQueueService {
     }
     // Accept booking request (enqueue)
     public void requestBooking(String guestName, String roomType) {
-        Reservation reservation = new Reservation(guestName, roomType);
+        Reservation reservation = new Reservation(guestName, roomType, null);
         bookingQueue.add(reservation);
         System.out.println("Booking request added for " + guestName + " → " + roomType);
     }
-    public void processBookings() {
-    	System.out.println("\n=== Processing Booking Requests ===");
+    public List<Reservation> processBookings() {
+        System.out.println("\n=== Processing Booking Requests ===");
+        List<Reservation> confirmedReservations = new ArrayList<>();
         while (!bookingQueue.isEmpty()) {
             Reservation reservation = bookingQueue.poll();
             String type = reservation.getRoomType();
-
             String roomId = inventory.allocateRoom(type, reservation.getGuestName());
             if (roomId != null) {
-                System.out.println("Booking CONFIRMED for " + reservation.getGuestName() +
+                Reservation confirmed = new Reservation(reservation.getGuestName(), type, roomId);
+                confirmedReservations.add(confirmed);
+                System.out.println("Booking CONFIRMED for " + confirmed.getGuestName() +
                                    " → " + type + " (Room ID: " + roomId + ")");
             } else {
                 System.out.println("Booking FAILED for " + reservation.getGuestName() +
                                    " → " + type + " (No availability)");
             }
         }
-
+        return confirmedReservations;
     }
+
 
 }
