@@ -4,14 +4,19 @@ import java.util.*;
 public class RoomInventory {
 	HashMap<String,Integer> roomCounts;
 	HashMap<String, Double> roomPrices;
+	private HashMap<String, Set<String>> allocatedRooms; // room type → assigned IDs
+    private Set<String> bookedRoomIds; 
 	public RoomInventory() {
 		roomCounts = new HashMap<String, Integer>();
 		roomPrices = new HashMap<String, Double>();
+		allocatedRooms = new HashMap<>();
+	    bookedRoomIds = new HashSet<>();
 	}
 	// setting the values 
-	public void addRoomType(String Type, int count, double price) {
-		roomCounts.put(Type, count);
-		roomPrices.put(Type, price);
+	public void addRoomType(String type, int count, double price) {
+	    roomCounts.put(type, count);
+	    roomPrices.put(type, price);
+	    allocatedRooms.put(type, new HashSet<>()); 
 	}
 
 	public void updateRoomCount(String type, int count) {
@@ -39,11 +44,26 @@ public class RoomInventory {
 	public HashMap<String, Integer> getRoomCounts() {
 		return roomCounts;
 	}
-	 public void decrementRoom(String type) {
-	        if (roomCounts.containsKey(type) && roomCounts.get(type) > 0) {
+	public void decrementRoom(String type) {
+		if (roomCounts.containsKey(type) && roomCounts.get(type) > 0) {
+			roomCounts.put(type, roomCounts.get(type) - 1);
+		}
+	}
+
+
+	public String allocateRoom(String type, String guestName) {
+	    if (getAvailability(type) > 0) {
+	        String roomId = type.substring(0, 2).toUpperCase() + "-" + UUID.randomUUID().toString().substring(0, 6);
+	        if (!bookedRoomIds.contains(roomId)) {
+	            bookedRoomIds.add(roomId);
+	            allocatedRooms.computeIfAbsent(type, k -> new HashSet<>()).add(roomId);
 	            roomCounts.put(type, roomCounts.get(type) - 1);
+	            return roomId;
 	        }
 	    }
+	    return null;
+	}
+
 
 
 	// Display inventory
