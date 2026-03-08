@@ -1,6 +1,8 @@
 package com.main;
 
 import java.util.*;
+
+import com.reservation.BookingHistory;
 import com.reservation.BookingQueueService;
 import com.reservation.Reservation;
 import com.room.RoomInventory;
@@ -17,6 +19,8 @@ public class BookMyStay {
         SearchService guestService = new SearchService(inventory);
         BookingQueueService bookingService = new BookingQueueService(inventory);
         ServiceManagementModule serviceModule = new ServiceManagementModule();
+        BookingHistory history = new BookingHistory();
+
 
         // Admin initializes rooms
         adminService.initializeDefaultRooms();
@@ -31,24 +35,27 @@ public class BookMyStay {
 
         // Process bookings
         List<Reservation> confirmed = bookingService.processBookings();
+
+        // Add confirmed reservations to history
         for (Reservation r : confirmed) {
-            if (r.getGuestName().equals("Alice")) {
-                serviceModule.addService(r.getRoomId(), new Service("Breakfast", 500.0));
-                serviceModule.addService(r.getRoomId(), new Service("Airport Pickup", 1200.0));
-            }
-            if (r.getGuestName().equals("Bob")) {
-                serviceModule.addService(r.getRoomId(), new Service("Spa", 2000.0));
-            }
+            history.addReservation(r);
         }
 
-        // Display services and calculate costs
-        for (Reservation r : confirmed) {
-            serviceModule.displayServices(r.getRoomId());
-            double totalCost = serviceModule.calculateTotalServiceCost(r.getRoomId());
-            System.out.println("Total Add-On Cost for " + r.getGuestName() + ": ₹" + totalCost);
+        // Generate report
+        history.generateReport();
+
+        // Cancel one reservation
+        if (!confirmed.isEmpty()) {
+            Reservation toCancel = confirmed.get(0);
+            inventory.cancelRoom(toCancel.getRoomId(), toCancel.getRoomType());
+            history.cancelReservation(toCancel.getRoomId());
         }
 
+        // Updated report
+        history.generateReport();
+        inventory.displayInventory();
+    }
 
-	}
+
 
 }

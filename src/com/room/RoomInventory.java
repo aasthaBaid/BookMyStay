@@ -64,6 +64,15 @@ public class RoomInventory {
 	    return null;
 	}
 
+	 public void cancelRoom(String roomId, String type) {
+	        if (bookedRoomIds.contains(roomId)) {
+	            bookedRoomIds.remove(roomId);
+	            allocatedRooms.getOrDefault(type, new HashSet<>()).remove(roomId);
+	            roomCounts.put(type, roomCounts.get(type) + 1);
+	            System.out.println("Room " + roomId + " cancelled and availability restored.");
+	        }
+	    }
+
 
 
 	// Display inventory
